@@ -1,8 +1,5 @@
 on:
-  pull_request:
-  push:
-    branches: [main, test-me-*]
-
+  workflow_call:
 jobs:
   main:
     runs-on: ubuntu-latest

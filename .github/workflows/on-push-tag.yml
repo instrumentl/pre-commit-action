@@ -1,0 +1,15 @@
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: write
+  packages: write
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+  release:
+    uses: ./.github/workflows/release.yml
+    needs: [ci]
+    secrets: inherit
