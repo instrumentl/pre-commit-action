@@ -12,9 +12,21 @@ runs:
     shell: bash
   - run: python -m pip freeze --local
     shell: bash
+  - run: |
+      tf=$(mktemp)
+      echo "arch=$(uname -p)" >> "$tf"
+      for program in python ruby go cargo ; do
+        if command -v $program >/dev/null 2>&1 ; then
+          echo "$program=$(which $program)" >> "$tf"
+        fi
+      done
+      hash="$(sha256sum < "$tf" | awk '{print $1}')"
+      echo "dependencyHash=${hash}" >> $GITHUB_OUTPUT
+    shell: bash
+    id: computeDependencies
   - uses: actions/cache@v4
     with:
       path: ~/.cache/pre-commit
-      key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      key: pre-commit-3|${{ steps.computeDependencies.outputs.dependencyHash }}|${{ hashFiles('.pre-commit-config.yaml') }}
   - run: pre-commit run --show-diff-on-failure --color=always ${{ inputs.extra_args }}
     shell: bash
