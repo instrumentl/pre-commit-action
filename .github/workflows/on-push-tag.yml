@@ -10,6 +10,6 @@ jobs:
     uses: ./.github/workflows/ci.yml
     secrets: inherit
   release:
-    uses: ./github/workflows/release.yml
+    uses: ./.github/workflows/release.yml
     needs: [ci]
     secrets: inherit
